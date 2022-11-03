@@ -1,0 +1,22 @@
+name: Run SPARQL
+
+on:
+  workflow_dispatch: {}
+
+jobs:
+  scheduled:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Install dependencies
+      run: npm install -g wikibase-cli
+    - name: Run SPARQL
+      run: bash senators.sh
+    - name: Commit results
+      run: |-
+        git config user.name "Automated"
+        git config user.email "actions@users.noreply.github.com"
+        git add .
+        timestamp=$(date -u)
+        git commit -m "Automated run: ${timestamp}" || exit 0
+        git push
